@@ -10,6 +10,7 @@ if sys.platform == 'win32':
 
 old_cwd = os.getcwd()
 try:
+    ignore_list = {'./install', './README.md'}
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     # Find files to be symlinked
@@ -19,7 +20,7 @@ try:
             dirs.remove('.git')
     
         for f in files:
-            if os.path.join(root, f) == './install':
+            if os.path.join(root, f) in ignore_list:
                 continue
             destination = os.path.expanduser(os.path.join('~/', root, f)).replace('/./', '/')
             source = os.path.abspath(os.path.join(root, f))
@@ -45,7 +46,10 @@ try:
             
     # Symlink files
     for source, destination in link_paths:
-        os.remove(destination)
+        try:
+            os.remove(destination)
+        except OSError:
+            pass
         os.symlink(source, destination)
     
 finally:

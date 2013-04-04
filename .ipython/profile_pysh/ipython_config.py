@@ -12,7 +12,7 @@ load_subconfig('ipython_config.py', profile='default')
 # c.PromptManager.in_template = r'{color.LightGreen}\u@\h{color.LightBlue}[{color.LightCyan}\Y1{color.LightBlue}]{color.Green}|\#> '
 # c.PromptManager.in2_template = r'{color.Green}|{color.LightGreen}\D{color.Green}> '
 # c.PromptManager.out_template = r'<\#> '
-c.PromptManager.in_template = ur'{color.Red}\u279c {color.LightCyan}\Y3{color.Blue}{git_branch_and_st} '
+c.PromptManager.in_template = ur'{color.Green}\u0c2c {color.LightCyan}\Y3{color.Blue}{git_branch_and_st} '
 c.PromptManager.in2_template = r'{color.Green}|{color.LightGreen}\D{color.Green}> '
 c.PromptManager.out_template = r'<\#> '
 

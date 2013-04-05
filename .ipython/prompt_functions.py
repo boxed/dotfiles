@@ -1,5 +1,7 @@
 # coding=utf8
+import os
 import subprocess
+import os.path
 from IPython.core.prompts import LazyEvaluate, Colors
 
 try:
@@ -76,4 +78,11 @@ def git_branch_and_st():
                 suffix += '+'
         return ur' git:(%s%s%s)%s%s' % (Colors.Red, branch, Colors.Blue, Colors.Yellow, suffix)
     else:
+        return ''
+
+@LazyEvaluate
+def virtual_env():
+    try:
+        return u'%s(%s) ' % (Colors.Yellow, os.path.split(os.environ['VIRTUAL_ENV'])[-1])
+    except KeyError:
         return ''

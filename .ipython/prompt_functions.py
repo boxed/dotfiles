@@ -1,3 +1,5 @@
+import IPython.core.prompts
+
 # coding=utf8
 try:
     import git as _git

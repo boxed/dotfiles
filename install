@@ -3,6 +3,7 @@
 import sys
 import os
 import os.path
+from subprocess import call
 
 if sys.platform == 'win32':
     print 'This installation only supports filesystems with symlink capability for now, sorry!'
@@ -10,7 +11,10 @@ if sys.platform == 'win32':
 
 old_cwd = os.getcwd()
 try:
-    ignore_list = {'./install', './README.md'}
+    if not os.path.exists(os.path.expanduser('~/.ipython/')):
+        print 'Creating default ipython profiles'
+        call(['ipython', 'profile', 'create'])
+    ignore_list = set(['./install', './README.md'])
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
     # Find files to be symlinked
@@ -50,6 +54,10 @@ try:
             os.remove(destination)
         except OSError:
             pass
+        try:
+            os.makedirs(os.path.dirname(destination))
+        except OSError:
+            pass # leaf already exists, good!
         os.symlink(source, destination)
     
 finally:

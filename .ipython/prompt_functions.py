@@ -5,9 +5,9 @@ import os.path
 from IPython.core.prompts import LazyEvaluate, Colors
 
 try:
-    import git
+    import git as _git
  
-    class Repo(git.Repo):
+    class Repo(_git.Repo):
         @property
         def active_branch(self):
             try:
@@ -24,7 +24,7 @@ try:
         try:
             repo = Repo()
             return repo.active_branch, repo.is_dirty, repo.has_untracked
-        except git.InvalidGitRepositoryError:
+        except _git.InvalidGitRepositoryError:
             return '', False, False
         except Exception as error:
             return str(error), False, False

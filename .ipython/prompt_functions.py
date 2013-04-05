@@ -1,9 +1,4 @@
 # coding=utf8
-import os
-import subprocess
-import os.path
-from IPython.core.prompts import LazyEvaluate, Colors
-
 try:
     import git as _git
  
@@ -23,7 +18,7 @@ try:
     def _br_and_st():
         try:
             repo = Repo()
-            return repo.active_branch, repo.is_dirty, repo.has_untracked
+            return repo.active_branch, repo.is_dirty(), repo.has_untracked
         except _git.InvalidGitRepositoryError:
             return '', False, False
         except Exception as error:
@@ -32,9 +27,8 @@ try:
 except ImportError:
     # Fall back to execute git subprocess if python-git is not installed.
  
-    from subprocess import Popen, PIPE
- 
     def _git_current_branch():
+        from subprocess import Popen, PIPE
         # The following is the same as `git branch |grep ^\* |cut -b3-` which gets the current branch name
         git_br = Popen(["git", "branch"], stdout=PIPE, stderr=PIPE)
         grep = Popen(['grep', r'^\*'], stdin=git_br.stdout, stdout=PIPE)
@@ -42,6 +36,7 @@ except ImportError:
         return cut.communicate()[0].strip()
  
     def _git_isdirty():
+        from subprocess import Popen, PIPE
         # git st --porcelain | grep -v ^? | wc -l
         git_st = Popen(["git", "status", "--porcelain"], stdout=PIPE, stderr=PIPE)
         grep = Popen(["grep", "-v", "^?"], stdin=git_st.stdout, stdout=PIPE)
@@ -51,6 +46,7 @@ except ImportError:
         return False if count == 0 else True
  
     def _git_has_untracked():
+        from subprocess import Popen, PIPE
         # git st --porcelain | grep ^? | wc -l
         git_st = Popen(["git", "status", "--porcelain"], stdout=PIPE, stderr=PIPE)
         grep = Popen(["grep", "^?"], stdin=git_st.stdout, stdout=PIPE)
@@ -65,8 +61,9 @@ except ImportError:
         except:
             return '', False, False
     
-@LazyEvaluate
+@IPython.core.prompts.LazyEvaluate
 def git_branch_and_st():
+    from IPython.core.prompts import Colors
     branch, dirty, untracked = _br_and_st()
     if branch:
         suffix = ''
@@ -80,8 +77,10 @@ def git_branch_and_st():
     else:
         return ''
 
-@LazyEvaluate
+@IPython.core.prompts.LazyEvaluate
 def virtual_env():
+    import os.path
+    from IPython.core.prompts import Colors
     try:
         return u'%s(%s) ' % (Colors.Yellow, os.path.split(os.environ['VIRTUAL_ENV'])[-1])
     except KeyError:
